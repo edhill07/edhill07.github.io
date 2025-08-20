@@ -5,11 +5,28 @@ xmlns:m="http://schemas.microsoft.com/office/2004/12/omml"
 xmlns="http://www.w3.org/TR/REC-html40">
 
 <head>
-<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
 <meta name=ProgId content=Word.Document>
 <meta name=Generator content="Microsoft Word 15">
 <meta name=Originator content="Microsoft Word 15">
 <link rel=File-List href="Current%20projects_files/filelist.xml">
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Hill, Ed</o:Author>
+  <o:LastAuthor>Hill, Ed</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>171</o:TotalTime>
+  <o:Created>2025-08-20T21:45:00Z</o:Created>
+  <o:LastSaved>2025-08-20T21:45:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>1459</o:Words>
+  <o:Characters>8319</o:Characters>
+  <o:Lines>69</o:Lines>
+  <o:Paragraphs>19</o:Paragraphs>
+  <o:CharactersWithSpaces>9759</o:CharactersWithSpaces>
+  <o:Version>16.00</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
 <link rel=themeData href="Current%20projects_files/themedata.thmx">
 <link rel=colorSchemeMapping
 href="Current%20projects_files/colorschememapping.xml">
@@ -774,13 +791,13 @@ Models</span></u></b></p>
 Matthew Leong and Supachai Saengthong)<o:p></o:p></i></p>
 
 <p class=MsoNormal><b><i>LLMs are great for researching and finding information
-� looking at documents directly, or quickly summing up tens of thousands of
-words of search results (this is �RAG�) � but how do we know they�re doing it
+– looking at documents directly, or quickly summing up tens of thousands of
+words of search results (this is “RAG”) – but how do we know they’re doing it
 well? Are their answers accurate? Have they captured everything?<o:p></o:p></i></b></p>
 
 <p class=MsoNormal>Looking at the evaluation of knowledge extraction and
-synthesis frameworks in general, and RAG in particular, using GRACE � a
-multi-agent RAG framework � for research and deployment. We are looking at
+synthesis frameworks in general, and RAG in particular, using GRACE – a
+multi-agent RAG framework – for research and deployment. We are looking at
 systematic evaluation of the novel features of GRACE and comparison to similar
 systems, and at how evaluation at a query level can be performed and played
 back to the user. Focussing on economic and prudential data.</p>
@@ -788,13 +805,13 @@ back to the user. Focussing on economic and prudential data.</p>
 <p class=MsoNormal><b>Enhancing BM25-based search<o:p></o:p></b></p>
 
 <p class=MsoNormal><b><i>The BM25 method has been around about 50 years now but
-is still a great way to find information � basically like doing <span
+is still a great way to find information – basically like doing <span
 class=SpellE>Ctrl+F</span>, but with corrections such as weighting towards
-rarer words. It�s fast, robust and explainable � how can we make it better?</i></b></p>
+rarer words. It’s fast, robust and explainable – how can we make it better?</i></b></p>
 
 <p class=MsoNormal>GRACE uses search techniques which extend BM25. A baseline
 BM25 (Lucene, with stemming) benefits from low import times and good
-performance � particularly with rare or domain specific words � see [] and the
+performance – particularly with rare or domain specific words – see [] and the
 widespread use of hybrid search. This project looks at the further work on this
 in GRACE, with evaluation of it overlapping with the work above.</p>
 
@@ -803,21 +820,21 @@ in GRACE, with evaluation of it overlapping with the work above.</p>
 <p class=MsoNormal><b><i>Word embeddings represent words as vectors of numbers,
 where the relative positions of those vectors have meaning. There are now much
 more sophisticated ways of representing words in context within a sentence, so
-results won�t be state-of-the-art, but it�s interesting to look at how
+results won’t be state-of-the-art, but it’s interesting to look at how
 representations are formed, and novel ways of doing that.<o:p></o:p></i></b></p>
 
 <p class=MsoNormal>Finding word embeddings as fixed points of forward mappings
-� explicitly, defining simple forward mapping to a word from its neighbours,
+– explicitly, defining simple forward mapping to a word from its neighbours,
 with negative sampling becoming orthonormalization. Usefulness of this (it
 needs little data), quality and flavour of the embeddings (word level and on
-MTEB � some capture semantic features and others achieve the aim of being more
+MTEB – some capture semantic features and others achieve the aim of being more
 like dependency-based ones), and links to other techniques. </p>
 
 <p class=MsoNormal><b>Expectation Formation in Large Language Models</b> <i>(with
 Niki Anesti and Andi Joseph)<o:p></o:p></i></p>
 
 <p class=MsoNormal><b><i>An LLM is told to behave like a given person (e.g. 30
-years old, male, employed, living in the North-East�), and given some basic
+years old, male, employed, living in the North-East…), and given some basic
 idea about the inflation in the economy at a given time. How does it think that
 person behaves, or how does it behave like that person? Does it replicate
 stylised facts about inflation expectations? Are the effects across
@@ -829,8 +846,8 @@ survey, and (for perceptions) the ONS out-turn. We use the inflation peak in
 early 2023 as an out-of-time (for GPT-3.5-0613) and out-of-experience test of
 the similarities and differences between these three measures. </p>
 
-<p class=MsoNormal><b>Sentiment Decomposition </b><i>(with Iulia Bucur) � Bank
-Underground � due to be published soon!<o:p></o:p></i></p>
+<p class=MsoNormal><b>Sentiment Decomposition </b><i>(with Iulia Bucur) – Bank
+Underground – due to be published soon!<o:p></o:p></i></p>
 
 <p class=MsoNormal><b>Understanding Monetary Policy Uncertainty </b><i>(with
 Carlos Canon Salazar, and Wonwoo Bae, Shinpei Nakamura and Chris Wu at Yale)<o:p></o:p></i></p>
@@ -907,7 +924,7 @@ the performance of the large LLM. Finally, we extract stable and sensible
 explanations for classification decisions.</p>
 
 <p class=MsoNormal><b><a
-href="https://bankunderground.co.uk/2024/01/18/schrodingers-market-what-the-quantum-internet-could-mean-for-the-financial-system/">Schrodinger�s
+href="https://bankunderground.co.uk/2024/01/18/schrodingers-market-what-the-quantum-internet-could-mean-for-the-financial-system/">Schrodinger’s
 market: what the quantum internet could mean for the financial system</a></b><i>
 (2024, Bank Underground blog post)</i></p>
 
@@ -917,7 +934,7 @@ applications, primarily driven by the immense speed-ups they offer over normal
 computers. And soon the nascent quantum internet should connect those isolated
 computers together. This blog post starts to think about what this new
 interconnected quantum world means for the financial system. What could the
-first �quantum markets� look like? What algorithms and infrastructure might they
+first ‘quantum markets’ look like? What algorithms and infrastructure might they
 leverage? And where might the differences from classical markets lie? &nbsp;</p>
 
 <p class=MsoNormal><b><a href="https://arxiv.org/pdf/2103.16977">Solving
@@ -960,7 +977,7 @@ Scholar</a> for my publications. <a href="https://www.linkedin.com/in/ed-hill/">
 
 <p class=MsoNormal>I enjoy running, playing the piano and learning languages (not
 to the point of being very good at them, but I like to <span class=GramE>compare
-and contrast</span> � Arabic, Mandarin, Japanese, �)</p>
+and contrast</span> – Arabic, Mandarin, Japanese, …)</p>
 
 </div>
 
