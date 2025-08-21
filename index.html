@@ -21,17 +21,17 @@
         .banner {
             width: 100%;
             height: 300px;
-            background: url('bar/foo.jpg') center center/cover no-repeat;
+            background: url('images/IMG_5667.jpg') center center/cover no-repeat;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: black;
             text-align: center;
             position: relative;
             overflow: hidden;
         }
 
-        .banner::before {
+        /* .banner::before {
             content: '';
             position: absolute;
             top: 0;
@@ -39,14 +39,14 @@
             right: 0;
             bottom: 0;
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
-            opacity: 0.3;
-        }
+            opacity: 0.9;
+        } */
 
         .banner-content {
             z-index: 1;
         }
 
-        .banner h1 {
+        .intro h1 {
             font-size: 3.5em;
             font-weight: 300;
             margin-bottom: 0.5em;
@@ -267,20 +267,86 @@
 </head>
 <body>
     <header class="banner">
-        <div class="banner-content">
+        <!-- <div class="banner-content">
             <h1>Ed Hill</h1>
             <p>Senior Research Data Scientist | Bank of England</p>
-        </div>
+        </div> -->
     </header>
 
     <div class="container">
         <div class="content">
             <section class="intro">
-                <p>I work in the Advanced Analytics (AA) division at the Bank of England as a Senior Research Data Scientist.</p>
-                <p>My role mixes research and more operational work, the two generally overlapping within each project, and I technically manage a couple of AA colleagues.</p>
+                <h1>Ed Hill</h1>
+              <p>Senior Research Data Scientist | Advanced Analytics | Bank of England</p>
+                <!-- <p>I work in the Advanced Analytics (AA) division at the Bank of England.</p> -->
+                </section>
+
+            <section class="section">
+                <h2 class="section-title">Recent Papers</h2>
+                <p style="text-align: center; font-style: italic; margin-bottom: 2rem;">*We are preparing these for journal submission later in the year</p>
+
+                <div class="papers-grid">
+                    <div class="paper-card">
+                        <div class="paper-image" style="background: url('images/economic_facts.JPG') center center/cover no-repeat;">
+                        </div>
+                        <div class="paper-content">
+                            <div class="paper-title">
+                                <a href="https://arxiv.org/pdf/2505.08662">Revealing economic facts: LLMs know more than they say</a>
+                            </div>
+                            <div class="paper-authors">with Marcus Buckmann and Quynh Anh Nguyen, 2025, arXiv*</div>
+                            <div class="paper-abstract">
+                                We investigate whether the hidden states of large language models (LLMs) can be used to estimate and impute economic and financial statistics. Focusing on county-level (e.g. unemployment) and firm-level (e.g. total assets) variables, we show that a simple linear model trained on the hidden states of open-source LLMs outperforms the models' text outputs. This suggests that hidden states capture richer economic information than the responses of the LLMs reveal directly.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="paper-card">
+                        <div class="paper-image" style="background: url('images/PLR.JPG') center center/cover no-repeat;">
+                        </div>
+                        <div class="paper-content">
+                            <div class="paper-title">
+                                <a href="https://www.bankofengland.co.uk/-/media/boe/files/working-paper/2025/improving-text-classification-logistic-regression-llms-tens-of-shot-classifiers.pdf">Logistic Regression makes small LLMs strong and explainable "tens-of-shot" classifiers</a>
+                            </div>
+                            <div class="paper-authors">with Marcus Buckmann, 2025, Bank of England Staff Working Paper*</div>
+                            <div class="paper-abstract">
+                                For simple classification tasks, we show that users can benefit from the advantages of using small, local, generative language models instead of large commercial models without a trade-off in performance or introducing extra labelling costs. Through experiments on 17 sentence classification tasks (2-4 classes), we show that penalised logistic regression on the embeddings from a small LLM equals (and usually betters) the performance of a large LLM in the "tens-of-shot" regime.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="paper-card">
+                        <div class="paper-image" style="background: url('images/Schrodinger.JPG') center center/cover no-repeat;">
+                        </div>
+                        <div class="paper-content">
+                            <div class="paper-title">
+                                <a href="https://bankunderground.co.uk/2024/01/18/schrodingers-market-what-the-quantum-internet-could-mean-for-the-financial-system/">Schrodinger's market: what the quantum internet could mean for the financial system</a>
+                            </div>
+                            <div class="paper-authors">2024, Bank Underground blog post</div>
+                            <div class="paper-abstract">
+                                Once the stuff of science fiction, quantum technologies are advancing fast. Individual quantum computers are finding a range of applications, primarily driven by the immense speed-ups they offer over normal computers. This blog post starts to think about what this new interconnected quantum world means for the financial system. What could the first 'quantum markets' look like?
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="paper-card">
+                        <div class="paper-image" style="background: url('images/RL.JPG') center center/cover no-repeat;">
+                        </div>
+                        <div class="paper-content">
+                            <div class="paper-title">
+                                <a href="https://arxiv.org/pdf/2103.16977">Solving Heterogeneous General Equilibrium Economic Models with Deep Reinforcement Learning</a>
+                            </div>
+                            <div class="paper-authors">with Marco Bardoscia and Arthur Turrell, 2021, arXiv</div>
+                            <div class="paper-abstract">
+                                General equilibrium macroeconomic models are a core tool used by policymakers to understand a nation's economy. We use techniques from reinforcement learning to solve such models incorporating heterogeneous agents in a way that is simple, extensible, and computationally efficient. The COVID-19 pandemic has highlighted the importance of heterogeneity in macroeconomic outcomes and the need for models that can more easily incorporate it.
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <section class="section">
+              <!-- <p>My role mixes research and more operational work, the two generally overlapping within each project, and I technically manage a couple of AA colleagues.</p> -->
+            
                 <h2 class="section-title">Current Projects</h2>
 
                 <h3 class="subsection-title">Language Models</h3>
@@ -360,69 +426,6 @@
                     <div class="project-collaborators">with Daniel Albuquerque, Sean Lavender, Jamie Lenney and Alberto Polo</div>
                     <div class="project-description">
                         The design and estimation of a UK-specific HANK model and policy experiments with it.
-                    </div>
-                </div>
-            </section>
-
-            <section class="section">
-                <h2 class="section-title">Recent Papers and Presentations</h2>
-                <p style="text-align: center; font-style: italic; margin-bottom: 2rem;">*We are preparing these for journal submission later in the year</p>
-
-                <div class="papers-grid">
-                    <div class="paper-card">
-                        <div class="paper-image" style="background: url('images/economic_facts.JPG') center center/cover no-repeat;">
-                        </div>
-                        <div class="paper-content">
-                            <div class="paper-title">
-                                <a href="https://arxiv.org/pdf/2505.08662">Revealing economic facts: LLMs know more than they say</a>
-                            </div>
-                            <div class="paper-authors">with Marcus Buckmann and Quynh Anh Nguyen, 2025, arXiv*</div>
-                            <div class="paper-abstract">
-                                We investigate whether the hidden states of large language models (LLMs) can be used to estimate and impute economic and financial statistics. Focusing on county-level (e.g. unemployment) and firm-level (e.g. total assets) variables, we show that a simple linear model trained on the hidden states of open-source LLMs outperforms the models' text outputs. This suggests that hidden states capture richer economic information than the responses of the LLMs reveal directly.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="paper-card">
-                        <div class="paper-image" style="background: url('images/PLR.JPG') center center/cover no-repeat;">
-                        </div>
-                        <div class="paper-content">
-                            <div class="paper-title">
-                                <a href="https://www.bankofengland.co.uk/-/media/boe/files/working-paper/2025/improving-text-classification-logistic-regression-llms-tens-of-shot-classifiers.pdf">Logistic Regression makes small LLMs strong and explainable "tens-of-shot" classifiers</a>
-                            </div>
-                            <div class="paper-authors">with Marcus Buckmann, 2025, Bank of England Staff Working Paper*</div>
-                            <div class="paper-abstract">
-                                For simple classification tasks, we show that users can benefit from the advantages of using small, local, generative language models instead of large commercial models without a trade-off in performance or introducing extra labelling costs. Through experiments on 17 sentence classification tasks (2-4 classes), we show that penalised logistic regression on the embeddings from a small LLM equals (and usually betters) the performance of a large LLM in the "tens-of-shot" regime.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="paper-card">
-                        <div class="paper-image" style="background: url('images/Schrodinger.JPG') center center/cover no-repeat;">
-                        </div>
-                        <div class="paper-content">
-                            <div class="paper-title">
-                                <a href="https://bankunderground.co.uk/2024/01/18/schrodingers-market-what-the-quantum-internet-could-mean-for-the-financial-system/">Schrodinger's market: what the quantum internet could mean for the financial system</a>
-                            </div>
-                            <div class="paper-authors">2024, Bank Underground blog post</div>
-                            <div class="paper-abstract">
-                                Once the stuff of science fiction, quantum technologies are advancing fast. Individual quantum computers are finding a range of applications, primarily driven by the immense speed-ups they offer over normal computers. This blog post starts to think about what this new interconnected quantum world means for the financial system. What could the first 'quantum markets' look like?
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="paper-card">
-                        <div class="paper-image" style="background: url('images/RL.JPG') center center/cover no-repeat;">
-                        </div>
-                        <div class="paper-content">
-                            <div class="paper-title">
-                                <a href="https://arxiv.org/pdf/2103.16977">Solving Heterogeneous General Equilibrium Economic Models with Deep Reinforcement Learning</a>
-                            </div>
-                            <div class="paper-authors">with Marco Bardoscia and Arthur Turrell, 2021, arXiv</div>
-                            <div class="paper-abstract">
-                                General equilibrium macroeconomic models are a core tool used by policymakers to understand a nation's economy. We use techniques from reinforcement learning to solve such models incorporating heterogeneous agents in a way that is simple, extensible, and computationally efficient. The COVID-19 pandemic has highlighted the importance of heterogeneity in macroeconomic outcomes and the need for models that can more easily incorporate it.
-                            </div>
-                        </div>
                     </div>
                 </div>
             </section>
