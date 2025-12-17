@@ -285,9 +285,22 @@
                 <h2 class="section-title">Recent Papers</h2>
                 <p style="text-align: center;" >See <a href="https://scholar.google.com/citations?hl=en&user=mutaoa0AAAAJ">Google Scholar</a> for a full list of publications.</p>
                 
-                <p style="text-align: center; font-style: italic; margin-bottom: 2rem;">*We are preparing these for journal submission later in the year</p>
-
                 <div class="papers-grid">
+
+                    <div class="paper-card">
+                        <div class="paper-image" style="background: url('images/GPT_IA.JPG') center center/cover no-repeat;">
+                        </div>
+                        <div class="paper-content">
+                            <div class="paper-title">
+                                <a href="https://arxiv.org/abs/2512.14306">Inflation Attitudes of Large Language Models</a>
+                            </div>
+                            <div class="paper-authors">with Niki Anesti and Andi Joseph, 2025, arXiv</div>
+                            <div class="paper-abstract">
+                                This paper investigates the ability of Large Language Models (LLMs), specifically GPT-3.5-turbo (GPT), to form inflation perceptions and expectations based on macroeconomic price signals. We compare the LLM's output to household survey data and official statistics, mimicking the information set and demographic characteristics of the Bank of England's Inflation Attitudes Survey (IAS). Our quasi-experimental design exploits the timing of GPT's training cut-off in September 2021 which means it has no knowledge of the subsequent UK inflation surge. We find that GPT tracks aggregate survey projections and official statistics at short horizons. At a disaggregated level, GPT replicates key empirical regularities of households' inflation perceptions, particularly for income, housing tenure, and social class. A novel Shapley value decomposition of LLM outputs suited for the synthetic survey setting provides well-defined insights into the drivers of model outputs linked to prompt content.
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="paper-card">
                         <div class="paper-image" style="background: url('images/bu_ukjpn.JPG') center center/cover no-repeat;">
                         </div>
@@ -309,7 +322,7 @@
                             <div class="paper-title">
                                 <a href="https://arxiv.org/pdf/2505.08662">Revealing economic facts: LLMs know more than they say</a>
                             </div>
-                            <div class="paper-authors">with Marcus Buckmann and Quynh Anh Nguyen, 2025, arXiv*</div>
+                            <div class="paper-authors">with Marcus Buckmann and Quynh Anh Nguyen, 2025, arXiv</div>
                             <div class="paper-abstract">
                                 We investigate whether the hidden states of large language models (LLMs) can be used to estimate and impute economic and financial statistics. Focusing on county-level (e.g. unemployment) and firm-level (e.g. total assets) variables, we show that a simple linear model trained on the hidden states of open-source LLMs outperforms the models' text outputs. This suggests that hidden states capture richer economic information than the responses of the LLMs reveal directly.
                             </div>
@@ -323,7 +336,7 @@
                             <div class="paper-title">
                                 <a href="https://www.bankofengland.co.uk/-/media/boe/files/working-paper/2025/improving-text-classification-logistic-regression-llms-tens-of-shot-classifiers.pdf">Logistic Regression makes small LLMs strong and explainable "tens-of-shot" classifiers</a>
                             </div>
-                            <div class="paper-authors">with Marcus Buckmann, 2025, Bank of England Staff Working Paper*</div>
+                            <div class="paper-authors">with Marcus Buckmann, 2025, Bank of England Staff Working Paper</div>
                             <div class="paper-abstract">
                                 For simple classification tasks, we show that users can benefit from the advantages of using small, local, generative language models instead of large commercial models without a trade-off in performance or introducing extra labelling costs. Through experiments on 17 sentence classification tasks (2-4 classes), we show that penalised logistic regression on the embeddings from a small LLM equals (and usually betters) the performance of a large LLM in the "tens-of-shot" regime.
                             </div>
