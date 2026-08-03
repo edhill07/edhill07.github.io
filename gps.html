@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pace - Ed Hill</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fafafa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .content {
+            background: white;
+            margin: 20px auto 0;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .breadcrumb {
+            padding: 20px 30px 0;
+            font-size: 0.95em;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-section {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 40px;
+            font-size: 0.7em;
+            margin-top: 20px;
+        }
+
+        /* ---------- speed readout ---------- */
+
+        #gspd {
+            padding: 10px 20px 40px;
+            text-align: center;
+        }
+
+        #gspd .gspd-value {
+            font-size: clamp(5rem, 34vw, 16rem);
+            line-height: 1;
+            color: #2c3e50;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.03em;
+            margin: 0.15em 0 0.25em;
+        }
+
+        #gspd .gspd-status {
+            color: #95a5a6;
+            font-style: italic;
+            min-height: 1.6em;
+            margin-bottom: 1.5rem;
+        }
+
+        #gspd .gspd-status.gspd-error {
+            color: #b03a3a;
+            font-style: normal;
+        }
+
+        #gspd .gspd-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #gspd button {
+            font-family: inherit;
+            font-size: 1.1em;
+            padding: 14px 26px;
+            border-radius: 8px;
+            border: 1px solid #d8dde6;
+            background: #fff;
+            color: #2c3e50;
+            cursor: pointer;
+        }
+
+        #gspd button:focus-visible { outline: 2px solid #667eea; outline-offset: 2px; }
+        #gspd button:disabled { opacity: .4; cursor: default; }
+
+        #gspd .gspd-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+            color: #fff;
+        }
+
+        #gspd .gspd-units {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            width: 100%;
+            max-width: 420px;
+            border: 1px solid #d8dde6;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #gspd .gspd-units button {
+            border: 0;
+            border-radius: 0;
+            padding: 14px 4px;
+            font-size: 1em;
+        }
+
+        #gspd .gspd-units button + button { border-left: 1px solid #d8dde6; }
+
+        #gspd .gspd-units button[aria-pressed="true"] {
+            background: #f2f4fb;
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 10px; }
+            #gspd { padding: 5px 12px 30px; }
+            #gspd button { padding: 16px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <nav class="breadcrumb"><a href="index.html">&larr; Ed Hill</a></nav>
+
+<!-- ==================== GPS speed component ==================== -->
+<section id="gspd">
+  <div class="gspd-value" data-gspd="speed">—</div>
+  <div class="gspd-status" data-gspd="status">&nbsp;</div>
+
+  <div class="gspd-controls">
+    <button type="button" class="gspd-primary" data-gspd="start">Start tracking</button>
+    <button type="button" data-gspd="stop" disabled>Stop</button>
+    <div class="gspd-units" role="group" aria-label="Units">
+      <button type="button" data-gspd-unit="pace" aria-pressed="true">min/km</button>
+      <button type="button" data-gspd-unit="kmh" aria-pressed="false">km/h</button>
+      <button type="button" data-gspd-unit="mph" aria-pressed="false">mph</button>
+      <button type="button" data-gspd-unit="ms" aria-pressed="false">m/s</button>
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  var root = document.getElementById('gspd');
+  if (!root || root.dataset.gspdReady) return;
+  root.dataset.gspdReady = '1';
+
+  var N = 5;                 // fixes in the window
+  var MAX_ACCURACY = 100;    // metres; drop fixes worse than this
+  var el = function (name) { return root.querySelector('[data-gspd="' + name + '"]'); };
+
+  var unit = 'pace';
+  var buffer = [];
+  var watchId = null;
+  var wakeLock = null;
+
+  // Formats a speed in m/s for display. Pace is m:ss per km; the rest are plain numbers.
+  function format(ms) {
+    if (unit === 'pace') {
+      if (ms < 0.3) return '—';
+      var secondsPerKm = 1000 / ms;
+      if (secondsPerKm > 3599) return '—';
+      var mins = Math.floor(secondsPerKm / 60);
+      var secs = Math.round(secondsPerKm % 60);
+      if (secs === 60) { mins += 1; secs = 0; }
+      return mins + ':' + (secs < 10 ? '0' : '') + secs;
+    }
+    if (unit === 'kmh') return (ms * 3.6).toFixed(1);
+    if (unit === 'mph') return (ms * 2.236936).toFixed(1);
+    return ms.toFixed(2);
+  }
+
+  function setStatus(text, isError) {
+    var s = el('status');
+    s.innerHTML = text ? '' : '&nbsp;';
+    if (text) s.textContent = text;
+    s.classList.toggle('gspd-error', !!isError);
+  }
+
+  function metresPerDegree(latDeg) {
+    var lat = latDeg * Math.PI / 180;
+    return {
+      lat: 111132.92 - 559.82 * Math.cos(2 * lat) + 1.175 * Math.cos(4 * lat),
+      lon: 111412.84 * Math.cos(lat) - 93.5 * Math.cos(3 * lat)
+    };
+  }
+
+  // Least-squares velocity through the window.
+  function fitSpeed(pts) {
+    var n = pts.length;
+    if (n < 2) return null;
+    var origin = pts[0];
+    var m = metresPerDegree(origin.lat);
+    var local = pts.map(function (p) {
+      return {
+        t: (p.t - origin.t) / 1000,
+        x: (p.lon - origin.lon) * m.lon,
+        y: (p.lat - origin.lat) * m.lat
+      };
+    });
+
+    var mean = function (key) {
+      return local.reduce(function (a, p) { return a + p[key]; }, 0) / n;
+    };
+    var mt = mean('t'), mx = mean('x'), my = mean('y');
+    var stt = 0, stx = 0, sty = 0;
+    local.forEach(function (p) {
+      var dt = p.t - mt;
+      stt += dt * dt;
+      stx += dt * (p.x - mx);
+      sty += dt * (p.y - my);
+    });
+    if (stt === 0) return null;
+
+    return Math.hypot(stx / stt, sty / stt);
+  }
+
+  function render() {
+    var speed = fitSpeed(buffer);
+    el('speed').textContent = speed === null ? '—' : format(speed);
+    if (speed !== null && buffer.length === N) setStatus('');
+  }
+
+  function onPosition(pos) {
+    var c = pos.coords;
+    if (c.accuracy > MAX_ACCURACY) return;
+
+    var last = buffer[buffer.length - 1];
+    if (last && pos.timestamp === last.t) return;
+
+    buffer.push({ t: pos.timestamp, lat: c.latitude, lon: c.longitude });
+    if (buffer.length > N) buffer.shift();
+
+    if (buffer.length < N) setStatus('Filling the window — ' + buffer.length + ' of ' + N);
+    render();
+  }
+
+  function onError(err) {
+    if (err.code === 1) {
+      setStatus('Location blocked: ' + (err.message || 'permission denied'), true);
+      stop();
+    } else if (err.code === 3) {
+      setStatus('Waiting for a fix.');
+    } else {
+      setStatus('No position available. Trying again.', true);
+    }
+  }
+
+  function holdScreenAwake() {
+    if (!('wakeLock' in navigator)) return;
+    navigator.wakeLock.request('screen').then(function (lock) {
+      wakeLock = lock;
+    }).catch(function () { /* not critical */ });
+  }
+
+  function start() {
+    if (!('geolocation' in navigator)) {
+      setStatus('This browser has no geolocation support.', true);
+      return;
+    }
+    if (!window.isSecureContext || location.protocol === 'file:') {
+      setStatus('Geolocation needs https:// or localhost.', true);
+      return;
+    }
+    buffer = [];
+    el('speed').textContent = '—';
+    setStatus('Asking for your location…');
+    watchId = navigator.geolocation.watchPosition(onPosition, onError, {
+      enableHighAccuracy: true,
+      maximumAge: 0,
+      timeout: 20000
+    });
+    holdScreenAwake();
+    el('start').disabled = true;
+    el('stop').disabled = false;
+  }
+
+  function stop() {
+    if (watchId !== null) {
+      navigator.geolocation.clearWatch(watchId);
+      watchId = null;
+    }
+    if (wakeLock) {
+      wakeLock.release().catch(function () {});
+      wakeLock = null;
+    }
+    el('start').disabled = false;
+    el('stop').disabled = true;
+  }
+
+  el('start').addEventListener('click', start);
+  el('stop').addEventListener('click', function () {
+    stop();
+    setStatus('Stopped.');
+  });
+
+  root.querySelectorAll('[data-gspd-unit]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      unit = btn.getAttribute('data-gspd-unit');
+      root.querySelectorAll('[data-gspd-unit]').forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
+      render();
+    });
+  });
+
+  // The screen lock is dropped when the page is hidden, so take it again on return.
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible' && watchId !== null) holdScreenAwake();
+  });
+
+  window.addEventListener('pagehide', stop);
+})();
+</script>
+<!-- ================== end GPS speed component ================== -->
+
+        </div>
+    </div>
+
+    <footer class="footer-section">
+        <p>All views expressed on this site, or in any of the linked materials I am involved in, are my own and not necessarily those of the Bank of England or its committees, or of any other organisation with which I am affiliated.</p>
+    </footer>
+</body>
+</html>
