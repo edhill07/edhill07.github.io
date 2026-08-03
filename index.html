@@ -460,6 +460,437 @@
                 <p>See <a href="https://scholar.google.com/citations?hl=en&user=mutaoa0AAAAJ&view_op=list_works&sortby=pubdate">Google Scholar</a> for my publications. <a href="https://www.linkedin.com/in/ed-hill/">LinkedIn</a>. I enjoy running, playing the piano and learning languages.</p>
             </section>
         </div>
+
+        
+<section class="gspd" id="gspd">
+  <style>
+    #gspd {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      color: #333;
+      padding: 50px 40px;
+      line-height: 1.6;
+    }
+    #gspd .gspd-title {
+      font-size: 2.2em;
+      color: #2c3e50;
+      margin: 0 0 2rem;
+      text-align: center;
+      font-weight: normal;
+    }
+    #gspd .gspd-title::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      margin: 15px auto;
+    }
+    #gspd .gspd-lede {
+      color: #666;
+      max-width: 700px;
+      margin: 0 auto 2rem;
+      text-align: center;
+    }
+    #gspd .gspd-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    #gspd button {
+      font-family: inherit;
+      font-size: 1em;
+      padding: 10px 22px;
+      border-radius: 6px;
+      border: 1px solid #d8dde6;
+      background: #fff;
+      color: #2c3e50;
+      cursor: pointer;
+      transition: border-color .15s, color .15s, background .15s;
+    }
+    #gspd button:hover:not(:disabled) { border-color: #667eea; color: #667eea; }
+    #gspd button:focus-visible { outline: 2px solid #667eea; outline-offset: 2px; }
+    #gspd button:disabled { opacity: .45; cursor: default; }
+    #gspd .gspd-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-color: transparent;
+      color: #fff;
+    }
+    #gspd .gspd-primary:hover:not(:disabled) { color: #fff; opacity: .9; border-color: transparent; }
+    #gspd .gspd-units { display: inline-flex; border: 1px solid #d8dde6; border-radius: 6px; overflow: hidden; }
+    #gspd .gspd-units button { border: 0; border-radius: 0; padding: 10px 16px; }
+    #gspd .gspd-units button + button { border-left: 1px solid #d8dde6; }
+    #gspd .gspd-units button[aria-pressed="true"] { background: #f2f4fb; color: #667eea; }
+
+    #gspd .gspd-readout {
+      text-align: center;
+      padding: 2rem 1rem;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      background: #fcfcfd;
+    }
+    #gspd .gspd-value {
+      font-size: 4.2em;
+      line-height: 1;
+      color: #2c3e50;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+    #gspd .gspd-unit { font-size: .3em; color: #7f8c8d; letter-spacing: .08em; margin-left: .4em; }
+    #gspd .gspd-pm { color: #7f8c8d; font-size: 1.05em; margin-top: .6rem; font-variant-numeric: tabular-nums; }
+    #gspd .gspd-status { color: #7f8c8d; font-style: italic; margin-top: .8rem; min-height: 1.6em; }
+    #gspd .gspd-status.gspd-error { color: #b03a3a; font-style: normal; }
+
+    #gspd .gspd-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1px;
+      background: #eee;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 1.5rem;
+    }
+    #gspd .gspd-cell { background: #fff; padding: 16px 18px; }
+    #gspd .gspd-label {
+      font-size: .72em;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: #95a5a6;
+      display: block;
+      margin-bottom: .35rem;
+    }
+    #gspd .gspd-num { font-size: 1.15em; color: #34495e; font-variant-numeric: tabular-nums; }
+
+    #gspd .gspd-fixes { margin-top: 1.5rem; }
+    #gspd .gspd-fixes h4 {
+      font-size: 1.05em;
+      color: #34495e;
+      font-weight: normal;
+      margin: 0 0 .75rem;
+    }
+    #gspd table { width: 100%; border-collapse: collapse; font-size: .9em; }
+    #gspd th, #gspd td { text-align: right; padding: 7px 10px; border-bottom: 1px solid #f0f0f0; font-variant-numeric: tabular-nums; }
+    #gspd th {
+      font-family: 'Georgia', serif;
+      font-weight: normal;
+      font-size: .78em;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #95a5a6;
+    }
+    #gspd td { color: #555; }
+    #gspd th:first-child, #gspd td:first-child { text-align: left; }
+    #gspd tbody tr:last-child td { border-bottom: none; font-weight: bold; color: #2c3e50; }
+    #gspd .gspd-empty { color: #95a5a6; font-style: italic; }
+    #gspd .gspd-note { color: #7f8c8d; font-size: .88em; margin-top: 1.5rem; text-align: center; }
+
+    @media (max-width: 768px) {
+      #gspd { padding: 30px 20px; }
+      #gspd .gspd-value { font-size: 3.2em; }
+      #gspd .gspd-controls button { flex: 1 1 auto; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #gspd button { transition: none; }
+    }
+  </style>
+
+  <h2 class="gspd-title">Speed from GPS</h2>
+  <p class="gspd-lede">
+    On a phone, this reads your location and fits a straight line through the
+    last five fixes to estimate how fast you are moving. Nothing is sent
+    anywhere — the fixes stay in the page and vanish when you close it.
+  </p>
+
+  <div class="gspd-controls">
+    <button type="button" class="gspd-primary" data-gspd="start">Start tracking</button>
+    <button type="button" data-gspd="stop" disabled>Stop</button>
+    <div class="gspd-units" role="group" aria-label="Speed units">
+      <button type="button" data-gspd-unit="ms" aria-pressed="false">m/s</button>
+      <button type="button" data-gspd-unit="kmh" aria-pressed="true">km/h</button>
+      <button type="button" data-gspd-unit="mph" aria-pressed="false">mph</button>
+    </div>
+  </div>
+
+  <div class="gspd-readout">
+    <div class="gspd-value"><span data-gspd="speed">—</span><span class="gspd-unit" data-gspd="unit">km/h</span></div>
+    <div class="gspd-pm" data-gspd="pm">&nbsp;</div>
+    <div class="gspd-status" data-gspd="status">Tracking is off.</div>
+  </div>
+
+  <div class="gspd-grid">
+    <div class="gspd-cell"><span class="gspd-label">Heading</span><span class="gspd-num" data-gspd="heading">—</span></div>
+    <div class="gspd-cell"><span class="gspd-label">Path length / time</span><span class="gspd-num" data-gspd="path">—</span></div>
+    <div class="gspd-cell"><span class="gspd-label">Device speed</span><span class="gspd-num" data-gspd="device">—</span></div>
+    <div class="gspd-cell"><span class="gspd-label">Window</span><span class="gspd-num" data-gspd="window">—</span></div>
+    <div class="gspd-cell"><span class="gspd-label">Fix accuracy</span><span class="gspd-num" data-gspd="acc">—</span></div>
+    <div class="gspd-cell"><span class="gspd-label">Fixes used</span><span class="gspd-num" data-gspd="count">0 of 5</span></div>
+  </div>
+
+  <div class="gspd-fixes">
+    <h4>The five fixes in the window</h4>
+    <table>
+      <thead>
+        <tr><th>Age</th><th>Latitude</th><th>Longitude</th><th>± m</th><th>Step m</th></tr>
+      </thead>
+      <tbody data-gspd="rows">
+        <tr><td colspan="5" class="gspd-empty">No fixes yet.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="gspd-note">
+    Speed is the magnitude of a least-squares velocity fitted to local
+    east/north displacement over the window; ± is the standard error of that
+    slope. Fits are reported as stationary when the speed is inside its own
+    error bar.
+  </p>
+</section>
+
+<script>
+(function () {
+  var root = document.getElementById('gspd');
+  if (!root || root.dataset.gspdReady) return;
+  root.dataset.gspdReady = '1';
+
+  var N = 5;                 // fixes in the window
+  var MAX_ACCURACY = 100;    // metres; drop fixes worse than this
+  var el = function (name) { return root.querySelector('[data-gspd="' + name + '"]'); };
+
+  var units = {
+    ms:  { label: 'm/s',  factor: 1,       dp: 2 },
+    kmh: { label: 'km/h', factor: 3.6,     dp: 1 },
+    mph: { label: 'mph',  factor: 2.236936, dp: 1 }
+  };
+  var unit = 'kmh';
+  var buffer = [];
+  var watchId = null;
+
+  function convert(ms, dp) {
+    var u = units[unit];
+    return (ms * u.factor).toFixed(dp === undefined ? u.dp : dp);
+  }
+
+  function setStatus(text, isError) {
+    var s = el('status');
+    s.textContent = text;
+    s.classList.toggle('gspd-error', !!isError);
+  }
+
+  function metresPerDegree(latDeg) {
+    var lat = latDeg * Math.PI / 180;
+    return {
+      lat: 111132.92 - 559.82 * Math.cos(2 * lat) + 1.175 * Math.cos(4 * lat),
+      lon: 111412.84 * Math.cos(lat) - 93.5 * Math.cos(3 * lat)
+    };
+  }
+
+  // Least-squares velocity through the window.
+  function fitVelocity(pts) {
+    var n = pts.length;
+    if (n < 2) return null;
+    var origin = pts[0];
+    var m = metresPerDegree(origin.lat);
+    var local = pts.map(function (p) {
+      return {
+        t: (p.t - origin.t) / 1000,
+        x: (p.lon - origin.lon) * m.lon,
+        y: (p.lat - origin.lat) * m.lat
+      };
+    });
+
+    var mean = function (key) {
+      return local.reduce(function (a, p) { return a + p[key]; }, 0) / n;
+    };
+    var mt = mean('t'), mx = mean('x'), my = mean('y');
+    var stt = 0, stx = 0, sty = 0;
+    local.forEach(function (p) {
+      var dt = p.t - mt;
+      stt += dt * dt;
+      stx += dt * (p.x - mx);
+      sty += dt * (p.y - my);
+    });
+    if (stt === 0) return null;
+
+    var vx = stx / stt, vy = sty / stt;
+    var speed = Math.hypot(vx, vy);
+
+    // Residual scatter about the fit gives a standard error on each component.
+    var sse = 0;
+    local.forEach(function (p) {
+      var dt = p.t - mt;
+      var rx = p.x - (mx + vx * dt);
+      var ry = p.y - (my + vy * dt);
+      sse += rx * rx + ry * ry;
+    });
+    var dof = 2 * n - 4;
+    var se = dof > 0 ? Math.sqrt((sse / dof) / stt) : NaN;
+
+    return { vx: vx, vy: vy, speed: speed, se: se, span: local[n - 1].t };
+  }
+
+  function haversine(a, b) {
+    var R = 6371008.8;
+    var p1 = a.lat * Math.PI / 180, p2 = b.lat * Math.PI / 180;
+    var dp = p2 - p1;
+    var dl = (b.lon - a.lon) * Math.PI / 180;
+    var h = Math.sin(dp / 2) * Math.sin(dp / 2) +
+            Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) * Math.sin(dl / 2);
+    return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+  }
+
+  function compass(deg) {
+    var names = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
+                 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+    return names[Math.round(deg / 22.5) % 16];
+  }
+
+  function renderRows() {
+    var body = el('rows');
+    if (!buffer.length) {
+      body.innerHTML = '<tr><td colspan="5" class="gspd-empty">No fixes yet.</td></tr>';
+      return;
+    }
+    var now = Date.now();
+    body.innerHTML = buffer.map(function (p, i) {
+      var step = i === 0 ? '—' : haversine(buffer[i - 1], p).toFixed(1);
+      return '<tr><td>' + ((now - p.t) / 1000).toFixed(1) + ' s ago</td>' +
+             '<td>' + p.lat.toFixed(5) + '</td>' +
+             '<td>' + p.lon.toFixed(5) + '</td>' +
+             '<td>' + p.acc.toFixed(0) + '</td>' +
+             '<td>' + step + '</td></tr>';
+    }).join('');
+  }
+
+  function render() {
+    el('unit').textContent = units[unit].label;
+    el('count').textContent = buffer.length + ' of ' + N;
+    renderRows();
+
+    var latest = buffer[buffer.length - 1];
+    el('acc').textContent = latest ? '± ' + latest.acc.toFixed(0) + ' m' : '—';
+    el('device').textContent = (latest && latest.deviceSpeed !== null && !isNaN(latest.deviceSpeed))
+      ? convert(latest.deviceSpeed) + ' ' + units[unit].label
+      : 'not reported';
+
+    var fit = fitVelocity(buffer);
+    if (!fit) {
+      el('speed').textContent = '—';
+      el('pm').innerHTML = '&nbsp;';
+      el('heading').textContent = '—';
+      el('path').textContent = '—';
+      el('window').textContent = '—';
+      return;
+    }
+
+    el('speed').textContent = convert(fit.speed);
+    el('pm').textContent = isNaN(fit.se)
+      ? 'need one more fix for an error estimate'
+      : '± ' + convert(fit.se) + ' ' + units[unit].label;
+
+    if (!isNaN(fit.se) && fit.speed < fit.se) {
+      setStatus('Holding still, as far as the fixes can tell.');
+    } else if (buffer.length < N) {
+      setStatus('Filling the window — ' + buffer.length + ' of ' + N + ' fixes.');
+    } else {
+      setStatus('Tracking.');
+    }
+
+    var bearing = (Math.atan2(fit.vx, fit.vy) * 180 / Math.PI + 360) % 360;
+    el('heading').textContent = (!isNaN(fit.se) && fit.speed < fit.se)
+      ? '—'
+      : bearing.toFixed(0) + '° ' + compass(bearing);
+
+    var path = 0;
+    for (var i = 1; i < buffer.length; i++) path += haversine(buffer[i - 1], buffer[i]);
+    el('path').textContent = fit.span > 0
+      ? convert(path / fit.span) + ' ' + units[unit].label
+      : '—';
+    el('window').textContent = fit.span.toFixed(1) + ' s over ' + buffer.length + ' fixes';
+  }
+
+  function onPosition(pos) {
+    var c = pos.coords;
+    if (c.accuracy > MAX_ACCURACY) {
+      setStatus('Skipped a fix accurate to only ± ' + c.accuracy.toFixed(0) + ' m. Open sky helps.');
+      return;
+    }
+    var last = buffer[buffer.length - 1];
+    if (last && pos.timestamp === last.t) return;
+
+    buffer.push({
+      t: pos.timestamp,
+      lat: c.latitude,
+      lon: c.longitude,
+      acc: c.accuracy,
+      deviceSpeed: c.speed
+    });
+    if (buffer.length > N) buffer.shift();
+    render();
+  }
+
+  function onError(err) {
+    if (err.code === 1) {
+      setStatus('Location permission was declined. Allow it in your browser settings to start.', true);
+      stop();
+    } else if (err.code === 3) {
+      setStatus('Waiting for a fix — this can take a while indoors.');
+    } else {
+      setStatus('No position available right now. Trying again.', true);
+    }
+  }
+
+  function start() {
+    if (!('geolocation' in navigator)) {
+      setStatus('This browser has no geolocation support.', true);
+      return;
+    }
+    if (!window.isSecureContext) {
+      setStatus('Geolocation needs https:// (or localhost). Load this page securely and try again.', true);
+      return;
+    }
+    buffer = [];
+    render();
+    setStatus('Asking for your location…');
+    watchId = navigator.geolocation.watchPosition(onPosition, onError, {
+      enableHighAccuracy: true,
+      maximumAge: 0,
+      timeout: 20000
+    });
+    root.querySelector('[data-gspd="start"]').disabled = true;
+    root.querySelector('[data-gspd="stop"]').disabled = false;
+  }
+
+  function stop() {
+    if (watchId !== null) {
+      navigator.geolocation.clearWatch(watchId);
+      watchId = null;
+    }
+    root.querySelector('[data-gspd="start"]').disabled = false;
+    root.querySelector('[data-gspd="stop"]').disabled = true;
+  }
+
+  root.querySelector('[data-gspd="start"]').addEventListener('click', start);
+  root.querySelector('[data-gspd="stop"]').addEventListener('click', function () {
+    stop();
+    setStatus('Stopped. The last window is still shown below.');
+  });
+
+  root.querySelectorAll('[data-gspd-unit]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      unit = btn.getAttribute('data-gspd-unit');
+      root.querySelectorAll('[data-gspd-unit]').forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
+      render();
+    });
+  });
+
+  window.addEventListener('pagehide', stop);
+})();
+</script>
     </div>
 
     <footer class="footer-section">
