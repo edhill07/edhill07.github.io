@@ -135,6 +135,20 @@
             color: #667eea;
         }
 
+        #gspd .gspd-plot {
+            max-width: 340px;
+            margin: 1.5rem auto 0;
+        }
+
+        #gspd .gspd-plot svg {
+            width: 100%;
+            height: auto;
+            display: block;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            background: #fcfcfd;
+        }
+
         @media (max-width: 768px) {
             .container { padding: 0 10px; }
             #gspd { padding: 5px 12px 30px; }
@@ -155,12 +169,17 @@
   <div class="gspd-controls">
     <button type="button" class="gspd-primary" data-gspd="start">Start tracking</button>
     <button type="button" data-gspd="stop" disabled>Stop</button>
+    <button type="button" data-gspd="plot-toggle" aria-pressed="false">Plot</button>
     <div class="gspd-units" role="group" aria-label="Units">
       <button type="button" data-gspd-unit="pace" aria-pressed="true">min/km</button>
       <button type="button" data-gspd-unit="kmh" aria-pressed="false">km/h</button>
       <button type="button" data-gspd-unit="mph" aria-pressed="false">mph</button>
       <button type="button" data-gspd-unit="ms" aria-pressed="false">m/s</button>
     </div>
+  </div>
+
+  <div class="gspd-plot" data-gspd="plot" hidden>
+    <svg viewBox="0 0 300 300" data-gspd="svg" role="img" aria-label="Plot of recorded fixes"></svg>
   </div>
 </section>
 
@@ -170,17 +189,20 @@
   if (!root || root.dataset.gspdReady) return;
   root.dataset.gspdReady = '1';
 
-  var N = 10;                 // fixes in the window
+  var N = 10;                // fixes in the window
   var MAX_ACCURACY = 100;    // metres; drop fixes worse than this
   var el = function (name) { return root.querySelector('[data-gspd="' + name + '"]'); };
 
   var unit = 'pace';
   var buffer = [];
+  var track = [];            // every accepted fix since Start, for the plot
+  var TRACK_CAP = 3000;
   var watchId = null;
   var wakeLock = null;
 
   // Formats a speed in m/s for display. Pace is m:ss per km; the rest are plain numbers.
   function format(ms) {
+    if (!isFinite(ms)) return '—';
     if (unit === 'pace') {
       if (ms < 0.3) return '—';
       var secondsPerKm = 1000 / ms;
@@ -210,10 +232,12 @@
     };
   }
 
-  // Least-squares velocity through the window.
+  // Distance between the mean of the first half of the window and the mean of
+  // the second half, over the time between those two means.
   function fitSpeed(pts) {
     var n = pts.length;
     if (n < 2) return null;
+
     var origin = pts[0];
     var m = metresPerDegree(origin.lat);
     var local = pts.map(function (p) {
@@ -224,23 +248,110 @@
       };
     });
 
-    var mean = function (arr, key) {
-      return arr.reduce(function (a, p) { return a + p[key]; }, 0) / arr.length;
-    };
     var half = Math.floor(n / 2);          // an odd window drops its middle fix
     var first = local.slice(0, half);
     var second = local.slice(n - half);
-    
+
+    // Takes the array explicitly — a one-argument version closing over `local`
+    // will silently return NaN when called like this.
+    var mean = function (arr, key) {
+      return arr.reduce(function (a, p) { return a + p[key]; }, 0) / arr.length;
+    };
+
     var dt = mean(second, 't') - mean(first, 't');
-    if (dt <= 0) return null;
-    
+    if (!(dt > 0)) return null;            // also rejects NaN, unlike dt <= 0
+
     var dx = mean(second, 'x') - mean(first, 'x');
     var dy = mean(second, 'y') - mean(first, 'y');
-    
-    return Math.hypot(dx, dy) / dt;
+    var speed = Math.hypot(dx, dy) / dt;
+
+    return isFinite(speed) ? speed : null;
+  }
+
+  // Redraws the whole track in local metres. Equal scale on both axes, so the
+  // shape is not stretched; the view never zooms in past 30 m, otherwise a
+  // standing start fills the box with pure jitter.
+  function drawPlot() {
+    var wrap = el('plot');
+    if (wrap.hidden || !track.length) return;
+
+    var origin = track[0];
+    var m = metresPerDegree(origin.lat);
+    var pts = track.map(function (p) {
+      return {
+        x: (p.lon - origin.lon) * m.lon,
+        y: (p.lat - origin.lat) * m.lat
+      };
+    });
+
+    var minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    pts.forEach(function (p) {
+      if (p.x < minX) minX = p.x;
+      if (p.x > maxX) maxX = p.x;
+      if (p.y < minY) minY = p.y;
+      if (p.y > maxY) maxY = p.y;
+    });
+
+    var span = Math.max(maxX - minX, maxY - minY, 30);
+    var scale = 260 / span;
+    var cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+    var sx = function (x) { return (150 + (x - cx) * scale).toFixed(1); };
+    var sy = function (y) { return (150 - (y - cy) * scale).toFixed(1); };
+    var xy = function (p) { return sx(p.x) + ',' + sy(p.y); };
+
+    var svg = '';
+
+    // whole track
+    // if (pts.length > 1) {
+    //   svg += '<polyline points="' + pts.map(xy).join(' ') + '" fill="none" ' +
+    //          'stroke="#d8dde6" stroke-width="1.5" stroke-linejoin="round"/>';
+    // }
+
+    // the fixes currently in the estimator window, plus each one as a dot
+    var win = pts.slice(pts.length - buffer.length);
+    if (win.length > 1) {
+      svg += '<polyline points="' + win.map(xy).join(' ') + '" fill="none" ' +
+             'stroke="#667eea" stroke-width="2" stroke-linejoin="round"/>';
+    }
+    win.forEach(function (p) {
+      svg += '<circle cx="' + sx(p.x) + '" cy="' + sy(p.y) + '" r="2" fill="#667eea"/>';
+    });
+
+    // the two half-means the speed is actually computed from
+    var half = Math.floor(win.length / 2);
+    if (half > 0) {
+      var centroid = function (arr) {
+        return {
+          x: arr.reduce(function (a, p) { return a + p.x; }, 0) / arr.length,
+          y: arr.reduce(function (a, p) { return a + p.y; }, 0) / arr.length
+        };
+      };
+      var c1 = centroid(win.slice(0, half));
+      var c2 = centroid(win.slice(win.length - half));
+      svg += '<line x1="' + sx(c1.x) + '" y1="' + sy(c1.y) + '" x2="' + sx(c2.x) +
+             '" y2="' + sy(c2.y) + '" stroke="#764ba2" stroke-width="1.5" stroke-dasharray="4 3"/>';
+      svg += '<circle cx="' + sx(c1.x) + '" cy="' + sy(c1.y) + '" r="4" fill="none" stroke="#764ba2" stroke-width="1.5"/>';
+      svg += '<circle cx="' + sx(c2.x) + '" cy="' + sy(c2.y) + '" r="4" fill="#764ba2"/>';
+    }
+
+    // scale bar, rounded to 1/2/5 x 10^k
+    var target = 70 / scale;
+    var pow = Math.pow(10, Math.floor(Math.log(target) / Math.LN10));
+    var mult = [1, 2, 5, 10], nice = pow * 10;
+    for (var i = 0; i < mult.length; i++) {
+      if (pow * mult[i] >= target) { nice = pow * mult[i]; break; }
+    }
+    var barPx = nice * scale;
+    svg += '<line x1="14" y1="286" x2="' + (14 + barPx).toFixed(1) + '" y2="286" stroke="#95a5a6" stroke-width="1.5"/>';
+    svg += '<text x="14" y="279" fill="#95a5a6" font-family="Georgia, serif" font-size="11">' +
+           (nice >= 1 ? nice : nice.toFixed(1)) + ' m</text>';
+    svg += '<text x="286" y="279" fill="#95a5a6" font-family="Georgia, serif" font-size="11" text-anchor="end">N &uarr;</text>';
+
+    el('svg').innerHTML = svg;
   }
 
   function render() {
+    drawPlot();
     var speed = fitSpeed(buffer);
     el('speed').textContent = speed === null ? '—' : format(speed);
     if (speed !== null && buffer.length === N) setStatus('');
@@ -248,13 +359,17 @@
 
   function onPosition(pos) {
     var c = pos.coords;
-    if (c.accuracy > MAX_ACCURACY) return;
+    if (!isFinite(c.latitude) || !isFinite(c.longitude) || !isFinite(pos.timestamp)) return;
+    if (!(c.accuracy <= MAX_ACCURACY)) return;   // a NaN accuracy is not a pass
 
     var last = buffer[buffer.length - 1];
     if (last && pos.timestamp === last.t) return;
 
-    buffer.push({ t: pos.timestamp, lat: c.latitude, lon: c.longitude });
+    var fix = { t: pos.timestamp, lat: c.latitude, lon: c.longitude };
+    buffer.push(fix);
     if (buffer.length > N) buffer.shift();
+    track.push(fix);
+    if (track.length > TRACK_CAP) track.shift();
 
     if (buffer.length < N) setStatus('Filling the window — ' + buffer.length + ' of ' + N);
     render();
@@ -288,6 +403,8 @@
       return;
     }
     buffer = [];
+    track = [];
+    el('svg').innerHTML = '';
     el('speed').textContent = '—';
     setStatus('Asking for your location…');
     watchId = navigator.geolocation.watchPosition(onPosition, onError, {
@@ -317,6 +434,14 @@
   el('stop').addEventListener('click', function () {
     stop();
     setStatus('Stopped.');
+  });
+
+  el('plot-toggle').addEventListener('click', function () {
+    var wrap = el('plot');
+    wrap.hidden = !wrap.hidden;
+    this.setAttribute('aria-pressed', String(!wrap.hidden));
+    this.textContent = wrap.hidden ? 'Plot' : 'Hide plot';
+    drawPlot();
   });
 
   root.querySelectorAll('[data-gspd-unit]').forEach(function (btn) {
