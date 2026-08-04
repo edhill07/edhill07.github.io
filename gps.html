@@ -285,7 +285,7 @@
     });
 
     var minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-    pts.forEach(function (p) {
+    pts.slice(pts.length - buffer.length).forEach(function (p) {
       if (p.x < minX) minX = p.x;
       if (p.x > maxX) maxX = p.x;
       if (p.y < minY) minY = p.y;
