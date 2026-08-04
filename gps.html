@@ -224,8 +224,8 @@
       };
     });
 
-    var mean = function (key) {
-      return local.reduce(function (a, p) { return a + p[key]; }, 0) / n;
+    var mean = function (arr, key) {
+      return arr.reduce(function (a, p) { return a + p[key]; }, 0) / arr.length;
     };
     var half = Math.floor(n / 2);          // an odd window drops its middle fix
     var first = local.slice(0, half);
