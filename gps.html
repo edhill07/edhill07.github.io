@@ -227,17 +227,17 @@
     var mean = function (key) {
       return local.reduce(function (a, p) { return a + p[key]; }, 0) / n;
     };
-    var mt = mean('t'), mx = mean('x'), my = mean('y');
-    // var stt = 0, stx = 0, sty = 0;
-    // local.forEach(function (p) {
-    //   var dt = p.t - mt;
-    //   stt += dt * dt;
-    //   stx += dt * (p.x - mx);
-    //   sty += dt * (p.y - my);
-    // });
-    if (mt === 0) return null;
-
-    return Math.hypot(mx / mt, my / mt);
+    var half = Math.floor(n / 2);          // an odd window drops its middle fix
+    var first = local.slice(0, half);
+    var second = local.slice(n - half);
+    
+    var dt = mean(second, 't') - mean(first, 't');
+    if (dt <= 0) return null;
+    
+    var dx = mean(second, 'x') - mean(first, 'x');
+    var dy = mean(second, 'y') - mean(first, 'y');
+    
+    return Math.hypot(dx, dy) / dt;
   }
 
   function render() {
