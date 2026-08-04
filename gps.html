@@ -170,7 +170,7 @@
   if (!root || root.dataset.gspdReady) return;
   root.dataset.gspdReady = '1';
 
-  var N = 5;                 // fixes in the window
+  var N = 10;                 // fixes in the window
   var MAX_ACCURACY = 100;    // metres; drop fixes worse than this
   var el = function (name) { return root.querySelector('[data-gspd="' + name + '"]'); };
 
@@ -228,16 +228,16 @@
       return local.reduce(function (a, p) { return a + p[key]; }, 0) / n;
     };
     var mt = mean('t'), mx = mean('x'), my = mean('y');
-    var stt = 0, stx = 0, sty = 0;
-    local.forEach(function (p) {
-      var dt = p.t - mt;
-      stt += dt * dt;
-      stx += dt * (p.x - mx);
-      sty += dt * (p.y - my);
-    });
-    if (stt === 0) return null;
+    // var stt = 0, stx = 0, sty = 0;
+    // local.forEach(function (p) {
+    //   var dt = p.t - mt;
+    //   stt += dt * dt;
+    //   stx += dt * (p.x - mx);
+    //   sty += dt * (p.y - my);
+    // });
+    if (mt === 0) return null;
 
-    return Math.hypot(stx / stt, sty / stt);
+    return Math.hypot(mx / mt, my / mt);
   }
 
   function render() {
